@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    tools:context=".Notebooks">
-
+    android:layout_height="match_parent">
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars"
-        android:contentDescription="TODO" />
+        android:id="@+id/image_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_android"
+        android:layout_marginRight="8dp">
+    </ImageView>
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Line 1"
+        android:layout_toEndOf="@+id/image_view"
+        android:layout_toRightOf="@+id/image_view"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold">
+    </TextView>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="299dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="16dp"
-        android:text="Notebook 1"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
+</androidx.cardview.widget.CardView>

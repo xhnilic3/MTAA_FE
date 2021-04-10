@@ -1,35 +1,14 @@
 package com.example.todolist
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.notebook_item.view.*
 
-class NotebookAdapter(
-        private val notebookList: MutableList<Notebook>,
-        private val ctx:Context
-) : RecyclerView.Adapter<NotebookAdapter.notebookViewHolder>(){
-    val list = notebookList
-    val context = ctx
-    class notebookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): notebookViewHolder {
-        return notebookViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.notebook_item,
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: notebookViewHolder, position: Int) {
-        val curNotebook = notebookList[position]
-
-    }
-
-    override fun getItemCount(): Int {
-        return notebookList.size;
-    }
-}
+//class NotebookAdapter: RecyclerView.Adapter() {
+////    itemView will be one instance of our row layout
+//    class NotebookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+////      synthetic property used instead itemView.image_view used instead of findViewById(R.id.image_view)
+//        val imageView: ImageView = itemView.image_view
+//    }
+//}

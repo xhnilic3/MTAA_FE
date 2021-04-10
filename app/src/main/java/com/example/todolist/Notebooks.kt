@@ -9,10 +9,10 @@ class Notebooks : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notebooks)
 
-        val btn = findViewById(R.id.btnMakeNotebook) as Button;
-        btn.setOnClickListener{
-            System.out.println("Bruuuh");
-        }
+//        val btn = findViewById(R.id.btnMakeNotebook) as Button;
+//        btn.setOnClickListener{
+//            System.out.println("Bruuuh");
+//        }
     }
 
 
