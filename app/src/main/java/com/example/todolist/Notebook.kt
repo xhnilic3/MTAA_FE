@@ -1,5 +1,5 @@
 package com.example.todolist
 
-data class notebook(
+data class Notebook(
     val buttonText: String
 )

@@ -1,13 +1,17 @@
 package com.example.todolist
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class notebookAdapter(
-    private val notebookList: MutableList<notebook>
-) : RecyclerView.Adapter<notebookAdapter.notebookViewHolder>(){
+class NotebookAdapter(
+        private val notebookList: MutableList<Notebook>,
+        private val ctx:Context
+) : RecyclerView.Adapter<NotebookAdapter.notebookViewHolder>(){
+    val list = notebookList
+    val context = ctx
     class notebookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): notebookViewHolder {
