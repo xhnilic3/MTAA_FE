@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateAccount">
+
+
+    <EditText
+        android:id="@+id/edName"
+        android:layout_width="285dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="48dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edPass"
+        android:layout_width="285dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="56dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/edName"
+        app:layout_constraintTop_toBottomOf="@+id/edName" />
+
+    <EditText
+        android:id="@+id/edMail"
+        android:layout_width="293dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="68dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:text="E-mail"
+        app:layout_constraintStart_toStartOf="@+id/edPass"
+        app:layout_constraintTop_toBottomOf="@+id/edPass" />
+
+    <Button
+        android:id="@+id/btnCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="116dp"
+        android:text="Create"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edMail" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginLeft="120dp"
+        android:text="Cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.295"
+        app:layout_constraintStart_toEndOf="@+id/btnCreate"
+        app:layout_constraintTop_toTopOf="@+id/btnCreate" />
+</androidx.constraintlayout.widget.ConstraintLayout>
