@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         findViewById<Button>(R.id.btnLogin).setOnClickListener{
-            val intent = Intent(this, Notebooks::class.java);
+            val intent = Intent(this, NotebookActivity::class.java);
             startActivity(intent);
         }
 
