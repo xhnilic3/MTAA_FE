@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NotebookActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="4dp"
-        android:layout_above="@id/buttons"
-        tools:listitem="@layout/notebook_item" />
+
 
     <LinearLayout
-        android:id="@+id/buttons"
-        android:padding="4dp"
-        android:clipToPadding="true"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-
-        <Button
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/insert_item"
-            android:layout_weight="1"
-            android:onClick="insertItem"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/remove_item"
-            android:layout_weight="1"
-            android:onClick="removeItem"/>
-
+            android:layout_height="match_parent"/>
     </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addingBtn"
+        android:src="@drawable/ic_add"
+        app:tint="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true" />
+
 </RelativeLayout>
