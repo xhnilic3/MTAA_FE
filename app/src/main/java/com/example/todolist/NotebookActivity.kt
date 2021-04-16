@@ -18,21 +18,21 @@ class NotebookActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private lateinit var addsBtn:FloatingActionButton
     private lateinit var recv:RecyclerView
-    private lateinit var userList:ArrayList<NotebookData>
-    private lateinit var userAdapter: UserAdapter
+    private lateinit var notebookList:ArrayList<NotebookData>
+    private lateinit var notebookAdapter: NotebookAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
         /**set List*/
-        userList = ArrayList()
+        notebookList = ArrayList()
         /**set find Id*/
         addsBtn = findViewById(R.id.addingBtn)
         recv = findViewById(R.id.mRecycler)
         /**set Adapter*/
-        userAdapter = UserAdapter(this,userList)
+        notebookAdapter = NotebookAdapter(this,notebookList)
         /**setRecycler view Adapter*/
         recv.layoutManager = LinearLayoutManager(this)
-        recv.adapter = userAdapter
+        recv.adapter = notebookAdapter
         /**set Dialog*/
         addsBtn.setOnClickListener { addInfo() }
 
@@ -51,10 +51,10 @@ class NotebookActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response){
                 val foo = Json.decodeFromString<List<NotebookData>>(response.body()?.string().toString())
 
-                for (item in foo) userList.add(item)
+                for (item in foo) notebookList.add(item)
                 //Thread handling
                 this@NotebookActivity.runOnUiThread(java.lang.Runnable {
-                    userAdapter.notifyDataSetChanged()
+                    notebookAdapter.notifyDataSetChanged()
                 })
             }
         })
@@ -78,8 +78,8 @@ class NotebookActivity : AppCompatActivity() {
             dialog,_->
             val names = notebookName.text.toString()
             val label = notebookLabel.text.toString()
-            userList.add(NotebookData(notebookId, notebookImage, "", 1, names, label, "", "", 0))
-            userAdapter.notifyDataSetChanged()
+            notebookList.add(NotebookData(notebookId, notebookImage, "", 1, names, label, "", "", 0))
+            notebookAdapter.notifyDataSetChanged()
             Toast.makeText(this,"Adding User Information Success",Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
