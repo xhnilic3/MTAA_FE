@@ -3,6 +3,8 @@ package com.example.todolist
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import okhttp3.*
 import okhttp3.ConnectionSpec.CLEARTEXT
 import java.io.IOException
@@ -15,7 +17,7 @@ class Testing : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        run("http://10.0.2.2:8000/notebooks")
+        run("http://10.0.2.2:8000/notebooks/user/2")
 
         val intent = Intent(this, MainActivity::class.java);
         startActivity(intent);
@@ -31,7 +33,9 @@ class Testing : AppCompatActivity() {
                 throw e
             }
             override fun onResponse(call: Call, response: Response){
-                println(response.body()?.string())
+                val foo = Json.decodeFromString<List<NotebookData>>(response.body()?.string().toString())
+
+                for (item in foo) println(item)
             }
         })
     }

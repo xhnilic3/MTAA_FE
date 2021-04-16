@@ -39,8 +39,8 @@ class UserAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : Rec
                         AlertDialog.Builder(ctx)
                                 .setView(v)
                                 .setPositiveButton("Ok") { dialog, _ ->
-                                    position.notebookName = name.text.toString()
-                                    position.notebookLabel = label.text.toString()
+                                    position.notebook_name = name.text.toString()
+                                    position.label = label.text.toString()
                                     notifyDataSetChanged()
                                     Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
                                     dialog.dismiss()
@@ -96,8 +96,8 @@ class UserAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : Rec
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val newList = userList[position]
-        holder.name.text = newList.notebookName
-        holder.mLabel.text = newList.notebookLabel
+        holder.name.text = newList.notebook_name
+        holder.mLabel.text = newList.label
     }
 
     override fun getItemCount(): Int {

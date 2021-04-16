@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-data class User(var userName: String, var email: String, var issual_time: Int, var expire_time: Int)
+data class User(var id:Int, var userName: String, var email: String, var issual_time: Int, var expire_time: Int)
