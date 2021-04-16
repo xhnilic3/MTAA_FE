@@ -14,7 +14,7 @@ class NotebookActivity : AppCompatActivity() {
     private lateinit var addsBtn:FloatingActionButton
     private lateinit var recv:RecyclerView
     private lateinit var notebokList:ArrayList<NotebookData>
-    private lateinit var userAdapter: UserAdapter
+    private lateinit var userAdapter: NotebookAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
@@ -24,7 +24,7 @@ class NotebookActivity : AppCompatActivity() {
         addsBtn = findViewById(R.id.addingBtn)
         recv = findViewById(R.id.mRecycler)
         /**set Adapter*/
-        userAdapter = UserAdapter(this,notebokList)
+        userAdapter = NotebookAdapter(this,notebokList)
         /**setRecycler view Adapter*/
         recv.layoutManager = LinearLayoutManager(this)
         recv.adapter = userAdapter
