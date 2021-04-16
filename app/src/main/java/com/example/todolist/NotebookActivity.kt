@@ -13,18 +13,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class NotebookActivity : AppCompatActivity() {
     private lateinit var addsBtn:FloatingActionButton
     private lateinit var recv:RecyclerView
-    private lateinit var userList:ArrayList<NotebookData>
+    private lateinit var notebokList:ArrayList<NotebookData>
     private lateinit var userAdapter: UserAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
         /**set List*/
-        userList = ArrayList()
+        notebokList = ArrayList()
         /**set find Id*/
         addsBtn = findViewById(R.id.addingBtn)
         recv = findViewById(R.id.mRecycler)
         /**set Adapter*/
-        userAdapter = UserAdapter(this,userList)
+        userAdapter = UserAdapter(this,notebokList)
         /**setRecycler view Adapter*/
         recv.layoutManager = LinearLayoutManager(this)
         recv.adapter = userAdapter
@@ -50,7 +50,7 @@ class NotebookActivity : AppCompatActivity() {
             dialog,_->
             val names = notebookName.text.toString()
             val label = notebookLabel.text.toString()
-            userList.add(NotebookData(notebookId, notebookImage, names, label))
+            notebokList.add(NotebookData(notebookId, notebookImage, names, label))
             userAdapter.notifyDataSetChanged()
             Toast.makeText(this,"Adding User Information Success",Toast.LENGTH_SHORT).show()
             dialog.dismiss()
