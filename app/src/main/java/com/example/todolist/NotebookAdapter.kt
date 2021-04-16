@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 
-class UserAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
 
     inner class UserViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
