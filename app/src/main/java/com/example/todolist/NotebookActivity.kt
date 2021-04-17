@@ -41,7 +41,7 @@ class NotebookActivity : AppCompatActivity() {
 
         //Getting stuff from database
         val request = Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/user/2")
+            .url("http://10.0.2.2:8000/notebooks/user/${CurrentUser.token.user.id}")
             .build()
 
         client.newCall(request).enqueue(object : Callback {

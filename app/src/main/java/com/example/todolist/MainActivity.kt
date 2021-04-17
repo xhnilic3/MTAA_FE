@@ -6,6 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import okhttp3.*
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,8 +27,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         findViewById<Button>(R.id.btnLogin).setOnClickListener{
-            val intent = Intent(this, NotebookActivity::class.java);
-            startActivity(intent);
+            logButton()
         }
 
         findViewById<Button>(R.id.btnCreateAcc).setOnClickListener{
@@ -46,5 +50,40 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun logButton(){
+        val client = OkHttpClient()
+        val name = findViewById<EditText>(R.id.logName).getText().toString();
+        val pass = findViewById<EditText>(R.id.logPass).getText().toString();
+
+        val loginBod = RequestBody.create(
+            MediaType.parse("application/json"), "{\"username\": \"$name\", \"password\": \"$pass\"}"
+        )
+
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/users/auth/login")
+            .post(loginBod)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if(response.code() == 200){
+                    //Asigning token to global class
+                    CurrentUser.token = Json.decodeFromString<Token>(response.body()?.string().toString())
+                    val intent = Intent(this@MainActivity, NotebookActivity::class.java);
+                    startActivity(intent);
+                }
+
+                //TODO show message that login information was incorrect
+            }
+        })
+
+
     }
 }
