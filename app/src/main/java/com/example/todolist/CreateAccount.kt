@@ -68,8 +68,8 @@ class CreateAccount : AppCompatActivity() {
                             override fun onResponse(call: Call, response: Response) {
                                 //Asigning token to global class
                                 CurrentUser.token = Json.decodeFromString<Token>(response.body()?.string().toString())
-
-                                //println(CurrentUser.token.user.userName)
+                                val intent = Intent(this@CreateAccount, MainActivity::class.java);
+                                startActivity(intent);
                             }
                         })
                     }

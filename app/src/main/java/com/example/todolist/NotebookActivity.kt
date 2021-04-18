@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -78,10 +79,53 @@ class NotebookActivity : AppCompatActivity() {
             dialog,_->
             val names = notebookName.text.toString()
             val label = notebookLabel.text.toString()
-            notebookList.add(NotebookData(notebookId, notebookImage, "", 1, names, label, "", "", 0))
-            notebookAdapter.notifyDataSetChanged()
-            Toast.makeText(this,"Adding User Information Success",Toast.LENGTH_SHORT).show()
+            ///----------------------------------------------------------------------------
+            val client = OkHttpClient()
+
+            val bod = RequestBody.create(
+                MediaType.parse("application/json"), """
+                    {
+                        "creator_id": ${CurrentUser.token.user.id},
+                        "notebook_type": 1,
+                        "notebook_name": "${names}",
+                        "label": "${label}",
+                        "notebook_color": "#000000",
+                        "collaborator_id": null
+                    }
+                """.trimIndent()
+            )
+
+            //Fetching jwt
+            val request = Request.Builder()
+                .url("http://10.0.2.2:8000/notebooks/")
+                .post(bod)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    println("Fail debug")
+                    throw e
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    println(response.code())
+                    if(response.code() == 201){
+                        //Asigning token to global class
+                        var newNotebook = Json.decodeFromString<NotebookData>(response.body()?.string().toString())
+                        notebookList.add(newNotebook)
+                        //Thread handling
+                        this@NotebookActivity.runOnUiThread(java.lang.Runnable {
+                            notebookAdapter.notifyDataSetChanged()
+                        })
+
+                    }
+
+                    //TODO show message that login information was incorrect
+                }
+            })
+            Toast.makeText(this@NotebookActivity,"Adding User Information Success",Toast.LENGTH_SHORT).show()
             dialog.dismiss()
+
         }
         addDialog.setNegativeButton("Cancel"){
             dialog,_->
