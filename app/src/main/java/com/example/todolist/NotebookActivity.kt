@@ -66,9 +66,6 @@ class NotebookActivity : AppCompatActivity() {
         val inflter = LayoutInflater.from(this)
         val v = inflter.inflate(R.layout.add_item,null)
         /**set view*/
-        /*TODO dorobit tahanie notebookImage a notebookId z databazy*/
-        val notebookImage = 0
-        val notebookId = 0
         val notebookName = v.findViewById<EditText>(R.id.userName)
         val notebookLabel = v.findViewById<EditText>(R.id.label)
 

@@ -7,6 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import okhttp3.*
+import java.io.IOException
 
 class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
@@ -63,6 +69,7 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
                                 .setMessage("Are you sure delete this Information")
                                 .setPositiveButton("Yes") { dialog, _ ->
                                     userList.removeAt(adapterPosition)
+                                    deleteNotebook(position)
                                     notifyDataSetChanged()
                                     Toast.makeText(ctx, "Deleted this Information", Toast.LENGTH_SHORT).show()
                                     dialog.dismiss()
@@ -103,4 +110,34 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
     override fun getItemCount(): Int {
         return userList.size
     }
+
+    fun deleteNotebook(ntb: NotebookData){
+        val client = OkHttpClient()
+
+        val bod = RequestBody.create(
+            MediaType.parse("application/json"),
+                Json.encodeToString(CurrentUser.token)
+        )
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+            .delete(bod)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+
+            }
+        })
+
+    }
+
+
+
 }
