@@ -47,6 +47,7 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
                                 .setPositiveButton("Ok") { dialog, _ ->
                                     position.notebook_name = name.text.toString()
                                     position.label = label.text.toString()
+                                    editNotebook(position, name.getText().toString(), label.getText().toString())
                                     notifyDataSetChanged()
                                     Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
                                     dialog.dismiss()
@@ -132,10 +133,39 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
 
             override fun onResponse(call: Call, response: Response) {
                 println(response.code())
-
             }
         })
+    }
 
+    fun editNotebook(ntb: NotebookData, name: String?, label: String?){
+        val client = OkHttpClient()
+        val bod = RequestBody.create(
+            MediaType.parse("application/json"),
+            """
+            {
+              "notebook_name": "${name}",
+              "label": "${label}",
+              "notebook_color": "${ntb.notebook_color}",
+              "collaborator_id": ${ntb.collaborator_id}
+            }
+            """.trimIndent()
+        )
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+            .put(bod)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+            }
+        })
     }
 
 
