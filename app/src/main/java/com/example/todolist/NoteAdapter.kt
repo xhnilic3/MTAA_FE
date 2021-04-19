@@ -27,7 +27,7 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
         private fun popupMenus(view: View) {
             val position = noteList[adapterPosition]
             val popupMenus = PopupMenu(ctx, view)
-            popupMenus.inflate(R.menu.notebook_item_context_menu)
+            popupMenus.inflate(R.menu.note_item_context_menu)
 //            TODO toto si nako rozbehaj, prosim
 //            popupMenus.setOnMenuItemClickListener {
 //                when (it.itemId) {
