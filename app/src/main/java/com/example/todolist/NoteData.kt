@@ -13,7 +13,7 @@ data class NoteData (
     val create_date: String,
     val update_date: String,
     val note_type: Int,
-    val note_content: String
+    var note_content: String
         )
 
 

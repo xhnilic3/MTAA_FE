@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import okhttp3.*
+import java.io.IOException
 
 class
 NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.Adapter<NoteAdapter.UserViewHolder>() {
@@ -29,62 +33,57 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
             val popupMenus = PopupMenu(ctx, view)
             popupMenus.inflate(R.menu.note_item_context_menu)
 //            TODO toto si nako rozbehaj, prosim
-//            popupMenus.setOnMenuItemClickListener {
-//                when (it.itemId) {
-//                    R.id.editText -> {
-//                        val v = LayoutInflater.from(ctx).inflate(R.layout.add_item, null)
-//                        val name = v.findViewById<EditText>(R.id.userName)
-//                        val label = v.findViewById<EditText>(R.id.label)
-//                        AlertDialog.Builder(ctx)
-//                            .setView(v)
-//                            .setPositiveButton("Ok") { dialog, _ ->
-//                                position.name = name.text.toString()
-////
-////                                editNotebook(position, name.getText().toString(), label.getText().toString())
-//                                notifyDataSetChanged()
-//                                Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
-//                                dialog.dismiss()
-//
-//                            }
-//                            .setNegativeButton("Cancel") { dialog, _ ->
-//                                dialog.dismiss()
-//
-//                            }
-//                            .create()
-//                            .show()
-//
-//                        true
-//                    }
-//                    R.id.delete -> {
-//                        /**set delete*/
-//                        AlertDialog.Builder(ctx)
-//                            .setTitle("Delete")
-//                            .setIcon(R.drawable.ic_warning)
-//                            .setMessage("Are you sure delete this Information")
-//                            .setPositiveButton("Yes") { dialog, _ ->
-//                                noteList.removeAt(adapterPosition)
-////                                deleteNotebook(position)
-//                                notifyDataSetChanged()
-//                                Toast.makeText(ctx, "Deleted this Information", Toast.LENGTH_SHORT).show()
-//                                dialog.dismiss()
-//                            }
-//                            .setNegativeButton("No") { dialog, _ ->
-//                                dialog.dismiss()
-//                            }
-//                            .create()
-//                            .show()
-//
-//                        true
-//                    }
-//                    R.id.editImage ->{
-//                        editImage(image)
-//
-//                        true
-//                    }
-//                    else -> true
-//                }
-//
-//            }
+            popupMenus.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.noteEditText -> {
+                        val v = LayoutInflater.from(ctx).inflate(R.layout.add_item, null)
+                        val name = v.findViewById<EditText>(R.id.userName)
+                        val label = v.findViewById<EditText>(R.id.label)
+                        AlertDialog.Builder(ctx)
+                            .setView(v)
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                position.name = name.text.toString()
+                                position.note_content = label.text.toString()
+                                editNote(position, name.getText().toString(), label.getText().toString())
+                                notifyDataSetChanged()
+                                Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+
+                            }
+                            .create()
+                            .show()
+
+                        true
+                    }
+                    R.id.noteDelete -> {
+                        /**set delete*/
+                        AlertDialog.Builder(ctx)
+                            .setTitle("Delete")
+                            .setIcon(R.drawable.ic_warning)
+                            .setMessage("Are you sure delete this Information")
+                            .setPositiveButton("Yes") { dialog, _ ->
+                                noteList.removeAt(adapterPosition)
+                                deleteNote(position)
+                                notifyDataSetChanged()
+                                Toast.makeText(ctx, "Deleted this Information", Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("No") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+
+                        true
+                    }
+                    else -> true
+                }
+
+            }
             popupMenus.show()
             val popup = PopupMenu::class.java.getDeclaredField("mPopup")
             popup.isAccessible = true
@@ -109,4 +108,60 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
     override fun getItemCount(): Int {
         return noteList.size
     }
+
+
+    fun deleteNote(nt: NoteData){
+        val client = OkHttpClient()
+
+        val bod = RequestBody.create(
+            MediaType.parse("application/json"),
+            Json.encodeToString(CurrentUser.token)
+        )
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${CurrentNotebook.id}/notes/${nt.note_id}")
+            .delete(bod)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+            }
+        })
+    }
+
+    fun editNote(nt: NoteData, name: String?, label: String?){
+        val client = OkHttpClient()
+        val bod = RequestBody.create(
+            MediaType.parse("application/json"),
+            """
+            {
+                "name": "${name}",
+                "note_content": "${label}"
+            }
+            """.trimIndent()
+        )
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${CurrentNotebook.id}/notes/${nt.note_id}")
+            .put(bod)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+            }
+        })
+    }
+
 }

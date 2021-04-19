@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!--we add icons-->
     <item
-        android:id="@+id/editText"
+        android:id="@+id/noteEditText"
         android:title="Edit Text"
         android:icon="@drawable/ic_edit"
         />
     <item
-        android:id="@+id/delete"
+        android:id="@+id/noteDelete"
         android:title="Delete"
         android:icon="@drawable/ic_delete"
         />
