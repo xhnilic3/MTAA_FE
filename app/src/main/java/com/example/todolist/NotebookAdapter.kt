@@ -2,12 +2,14 @@ package com.example.todolist
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -38,6 +40,12 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             popupMenus.inflate(R.menu.notebook_item_context_menu)
             popupMenus.setOnMenuItemClickListener {
                 when (it.itemId) {
+                    R.id.open ->{
+                        val intent = Intent(ctx, NoteActivity::class.java);
+                        ctx.startActivity(intent);
+
+                        true
+                    }
                     R.id.editText -> {
                         val v = LayoutInflater.from(ctx).inflate(R.layout.add_item, null)
                         val name = v.findViewById<EditText>(R.id.userName)
