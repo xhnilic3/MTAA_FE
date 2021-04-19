@@ -2,6 +2,8 @@ package com.example.todolist
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +82,11 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
                                 }
                                 .create()
                                 .show()
+
+                        true
+                    }
+                    R.id.editImage ->{
+                        editImage(image)
 
                         true
                     }
@@ -166,6 +173,32 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
                 println(response.code())
             }
         })
+    }
+
+    fun editImage(image: ImageView){
+        //val bytes:Bitmap = BitmapFactory.decodeFile("C:\\Users\\peter\\Desktop\\school\\MTAA_FE\\app\\src\\main\\res\\drawable");
+        val client = OkHttpClient()
+
+        //Fetching jwt
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/12/icon")
+            .build()
+        var foo:Bitmap? = null
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+                foo = BitmapFactory.decodeStream(response.body()?.byteStream())
+            }
+        })
+
+        image.setImageBitmap(foo)
+
     }
 
 
