@@ -15,7 +15,7 @@ import okhttp3.*
 import java.io.IOException
 
 class NoteActivity : AppCompatActivity() {
-
+    private val client = OkHttpClient()
     private lateinit var addsBtn: FloatingActionButton
     private lateinit var recv: RecyclerView
     private lateinit var noteList:ArrayList<NoteData>
@@ -37,14 +37,35 @@ class NoteActivity : AppCompatActivity() {
         recv.adapter = noteAdapter
         /**set Dialog*/
         addsBtn.setOnClickListener { addInfo() }
+
+        //Getting stuff from database
+        val request = Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${CurrentNotebook.id}/notes")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                throw e
+            }
+            override fun onResponse(call: Call, response: Response){
+                val foo = Json.decodeFromString<List<NoteData>>(response.body()?.string().toString())
+                println(CurrentNotebook.id)
+                for (item in foo) noteList.add(item)
+                //Thread handling
+                this@NoteActivity.runOnUiThread(java.lang.Runnable {
+                    noteAdapter.notifyDataSetChanged()
+                })
+            }
+        })
+
     }
 
     private fun addInfo() {
         val inflter = LayoutInflater.from(this)
         val v = inflter.inflate(R.layout.add_note_item,null)
         /**set view*/
-        val noteName = v.findViewById<EditText>(R.id.userName)
-        val noteLabel = v.findViewById<EditText>(R.id.label)
+        val noteName = v.findViewById<EditText>(R.id.noteName)
+        val noteLabel = v.findViewById<EditText>(R.id.note_content)
 
         val addDialog = AlertDialog.Builder(this)
 
@@ -58,20 +79,17 @@ class NoteActivity : AppCompatActivity() {
 
             val bod = RequestBody.create(
                 MediaType.parse("application/json"), """
-                    {
-                        "creator_id": ${CurrentUser.token.user.id},
-                        "notebook_type": 1,
-                        "notebook_name": "${names}",
-                        "label": "${label}",
-                        "notebook_color": "#000000",
-                        "collaborator_id": null
-                    }
+                {
+                  "name": "${names}",
+                  "note_type": 1,
+                  "note_content": "${label}"
+                }
                 """.trimIndent()
             )
 
             //Fetching jwt
             val request = Request.Builder()
-                .url("http://10.0.2.2:8000/notebooks/")
+                .url("http://10.0.2.2:8000/notebooks/${CurrentNotebook.id}/notes/")
                 .post(bod)
                 .build()
 

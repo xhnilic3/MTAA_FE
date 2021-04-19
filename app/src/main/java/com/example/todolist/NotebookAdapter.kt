@@ -41,6 +41,8 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             popupMenus.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.open ->{
+                        CurrentNotebook.id = position.notebook_id
+
                         val intent = Intent(ctx, NoteActivity::class.java);
                         ctx.startActivity(intent);
 

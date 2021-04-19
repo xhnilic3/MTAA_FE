@@ -13,15 +13,13 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
 
     inner class UserViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        var image: ImageView
         var name: TextView
         var mLabel: TextView
         var mMenus: ImageView
 
         init {
-            image = view.findViewById(R.id.mImage)
-            name = view.findViewById<TextView>(R.id.mTitle)
-            mLabel = view.findViewById<TextView>(R.id.mSubTitle)
+            name = view.findViewById<TextView>(R.id.mNotebookTitle)
+            mLabel = view.findViewById<TextView>(R.id.mNote)
             mMenus = view.findViewById(R.id.mMenus)
             mMenus.setOnClickListener { popupMenus(it) }
         }
