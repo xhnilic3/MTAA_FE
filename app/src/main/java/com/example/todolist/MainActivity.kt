@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -26,11 +28,11 @@ class MainActivity : AppCompatActivity() {
 //            startActivity(intent);
 //        }
 
-        findViewById<Button>(R.id.btnLogin).setOnClickListener{
+        findViewById<Button>(R.id.btnLogin).setOnClickListener {
             logButton()
         }
 
-        findViewById<Button>(R.id.btnCreateAcc).setOnClickListener{
+        findViewById<Button>(R.id.btnCreateAcc).setOnClickListener {
             val intent = Intent(this, CreateAccount::class.java);
             startActivity(intent);
         }
@@ -52,13 +54,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun logButton(){
+    fun logButton() {
         val client = OkHttpClient()
         val name = findViewById<EditText>(R.id.logName).getText().toString();
         val pass = findViewById<EditText>(R.id.logPass).getText().toString();
 
         val loginBod = RequestBody.create(
-            MediaType.parse("application/json"), "{\"username\": \"$name\", \"password\": \"$pass\"}"
+            MediaType.parse("application/json"),
+            "{\"username\": \"$name\", \"password\": \"$pass\"}"
         )
 
         //Fetching jwt
@@ -73,14 +76,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if(response.code() == 200){
+                if (response.code() == 200) {
                     //Asigning token to global class
-                    CurrentUser.token = Json.decodeFromString<Token>(response.body()?.string().toString())
+                    CurrentUser.token =
+                        Json.decodeFromString<Token>(response.body()?.string().toString())
                     val intent = Intent(this@MainActivity, NotebookActivity::class.java);
                     startActivity(intent);
                 }
-
-                //TODO show message that login information was incorrect
+                else {
+                    this@MainActivity.runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Wrong credentials!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
             }
         })
 
