@@ -11,8 +11,8 @@ data class NotebookData (
         val creator_id:Int,
         val creator_date:String,
         val notebook_type:Int,
-        val notebook_name:String,
-        val label:String?,
+        var notebook_name:String,
+        var label:String?,
         val notebook_color:String,
         val update_date:String,
         val collaborator_id:Int?
