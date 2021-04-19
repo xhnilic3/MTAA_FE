@@ -1,4 +1,19 @@
 package com.example.todolist
 
-class NoteData {
-}
+import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
+import java.sql.Date
+
+@Keep
+@Serializable
+data class NoteData (
+    val note_id: Int,
+    val notebook_id: Int,
+    var name: String,
+    val create_date: String,
+    val update_date: String,
+    val note_type: Int,
+    val note_content: String
+        )
+
+

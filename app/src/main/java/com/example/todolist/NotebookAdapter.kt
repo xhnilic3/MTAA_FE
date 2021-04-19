@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.*
 import java.io.IOException
 
-class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
+class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
 
     inner class UserViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -33,7 +33,7 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
         }
 
         private fun popupMenus(view: View) {
-            val position = userList[adapterPosition]
+            val position = notebookList[adapterPosition]
             val popupMenus = PopupMenu(ctx, view)
             popupMenus.inflate(R.menu.notebook_item_context_menu)
             popupMenus.setOnMenuItemClickListener {
@@ -69,7 +69,7 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
                                 .setIcon(R.drawable.ic_warning)
                                 .setMessage("Are you sure delete this Information")
                                 .setPositiveButton("Yes") { dialog, _ ->
-                                    userList.removeAt(adapterPosition)
+                                    notebookList.removeAt(adapterPosition)
                                     deleteNotebook(position)
                                     notifyDataSetChanged()
                                     Toast.makeText(ctx, "Deleted this Information", Toast.LENGTH_SHORT).show()
@@ -108,13 +108,13 @@ class NotebookAdapter(val ctx: Context, val userList: ArrayList<NotebookData>) :
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        val newList = userList[position]
+        val newList = notebookList[position]
         holder.name.text = newList.notebook_name
         holder.mLabel.text = newList.label
     }
 
     override fun getItemCount(): Int {
-        return userList.size
+        return notebookList.size
     }
 
     fun deleteNotebook(ntb: NotebookData){

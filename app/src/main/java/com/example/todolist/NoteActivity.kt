@@ -1,11 +1,11 @@
 package com.example.todolist
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -14,74 +14,45 @@ import kotlinx.serialization.json.Json
 import okhttp3.*
 import java.io.IOException
 
-class NotebookActivity : AppCompatActivity() {
-    private val client = OkHttpClient()
-    private lateinit var addsBtn:FloatingActionButton
-    private lateinit var openBtn:FloatingActionButton
-    private lateinit var recv:RecyclerView
-    private lateinit var notebookList:ArrayList<NotebookData>
-    private lateinit var notebookAdapter: NotebookAdapter
+class NoteActivity : AppCompatActivity() {
+
+    private lateinit var addsBtn: FloatingActionButton
+    private lateinit var recv: RecyclerView
+    private lateinit var noteList:ArrayList<NoteData>
+    private lateinit var noteAdapter: NoteAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_notebook)
         /**set List*/
-        notebookList = ArrayList()
+        noteList = ArrayList()
         /**set find Id*/
         addsBtn = findViewById(R.id.addingBtn)
         recv = findViewById(R.id.mRecycler)
         /**set Adapter*/
-        notebookAdapter = NotebookAdapter(this,notebookList)
+        noteAdapter = NoteAdapter(this,noteList)
         /**setRecycler view Adapter*/
         recv.layoutManager = LinearLayoutManager(this)
-        recv.adapter = notebookAdapter
+        recv.adapter = noteAdapter
         /**set Dialog*/
         addsBtn.setOnClickListener { addInfo() }
-
-
-//        findViewById<Button>(R.id.open).setOnClickListener{
-//            val intent = Intent(this, NoteActivity::class.java);
-//            startActivity(intent);
-//        }
-
-
-
-
-        //Getting stuff from database
-        val request = Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/user/${CurrentUser.token.user.id}")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                throw e
-            }
-            override fun onResponse(call: Call, response: Response){
-                val foo = Json.decodeFromString<List<NotebookData>>(response.body()?.string().toString())
-
-                for (item in foo) notebookList.add(item)
-                //Thread handling
-                this@NotebookActivity.runOnUiThread(java.lang.Runnable {
-                    notebookAdapter.notifyDataSetChanged()
-                })
-            }
-        })
-        //userAdapter.notifyDataSetChanged()
     }
 
     private fun addInfo() {
         val inflter = LayoutInflater.from(this)
-        val v = inflter.inflate(R.layout.add_item,null)
+        val v = inflter.inflate(R.layout.add_note_item,null)
         /**set view*/
-        val notebookName = v.findViewById<EditText>(R.id.userName)
-        val notebookLabel = v.findViewById<EditText>(R.id.label)
+        val noteName = v.findViewById<EditText>(R.id.userName)
+        val noteLabel = v.findViewById<EditText>(R.id.label)
 
         val addDialog = AlertDialog.Builder(this)
 
         addDialog.setView(v)
         addDialog.setPositiveButton("Ok"){
-            dialog,_->
-            val names = notebookName.text.toString()
-            val label = notebookLabel.text.toString()
+                dialog,_->
+            val names = noteName.text.toString()
+            val label = noteLabel.text.toString()
             ///----------------------------------------------------------------------------
             val client = OkHttpClient()
 
@@ -114,11 +85,11 @@ class NotebookActivity : AppCompatActivity() {
                     println(response.code())
                     if(response.code() == 201){
                         //Asigning token to global class
-                        var newNotebook = Json.decodeFromString<NotebookData>(response.body()?.string().toString())
-                        notebookList.add(newNotebook)
+                        var newNote = Json.decodeFromString<NoteData>(response.body()?.string().toString())
+                        noteList.add(newNote)
                         //Thread handling
-                        this@NotebookActivity.runOnUiThread(java.lang.Runnable {
-                            notebookAdapter.notifyDataSetChanged()
+                        this@NoteActivity.runOnUiThread(java.lang.Runnable {
+                            noteAdapter.notifyDataSetChanged()
                         })
 
                     }
@@ -126,19 +97,17 @@ class NotebookActivity : AppCompatActivity() {
                     //TODO show message that login information was incorrect
                 }
             })
-            Toast.makeText(this@NotebookActivity,"Adding User Information Success",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@NoteActivity,"Adding User Information Success", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
 
         }
         addDialog.setNegativeButton("Cancel"){
-            dialog,_->
+                dialog,_->
             dialog.dismiss()
-            Toast.makeText(this,"Cancel",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Cancel", Toast.LENGTH_SHORT).show()
 
         }
         addDialog.create()
         addDialog.show()
     }
-    /**ok now run this */
-
 }
