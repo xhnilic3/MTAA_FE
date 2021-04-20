@@ -1,30 +1,19 @@
 package com.example.todolist
 
-import java.util.Base64;
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-import android.util.Base64.encodeToString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
-import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.*
 import kotlin.collections.ArrayList
 
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
@@ -118,6 +107,33 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                     }
                     R.id.editImage -> {
                         editImage(image)
+                        true
+                    }
+                    R.id.editColor -> {
+                        val v = LayoutInflater.from(ctx).inflate(R.layout.change_color_notebook, null)
+                        val color = v.findViewById<EditText>(R.id.notebookColor)
+
+                        AlertDialog.Builder(ctx)
+                            .setView(v)
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                position.notebook_color = color.text.toString()
+                                notifyDataSetChanged()
+                                Toast.makeText(
+                                    ctx,
+                                    "User Information is Edited",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                dialog.dismiss()
+
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+
+                            }
+                            .create()
+                            .show()
+
+
                         true
                     }
                     else -> true

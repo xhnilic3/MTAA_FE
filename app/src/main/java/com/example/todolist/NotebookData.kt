@@ -1,6 +1,5 @@
 package com.example.todolist
 
-import android.widget.ImageView
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 

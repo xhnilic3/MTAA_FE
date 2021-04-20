@@ -13,14 +13,19 @@
         android:icon="@drawable/ic_edit"
         />
     <item
-        android:id="@+id/delete"
-        android:title="Delete"
-        android:icon="@drawable/ic_delete"
-        />
-    <item
         android:title="Edit Image"
         android:id="@+id/editImage"
         android:icon="@drawable/ic_edit"
+        />
+    <item
+        android:title="Edit Color"
+        android:id="@+id/editColor"
+        android:icon="@drawable/ic_edit"
+        />
+    <item
+        android:id="@+id/delete"
+        android:title="Delete"
+        android:icon="@drawable/ic_delete"
         />
 
 </menu>
