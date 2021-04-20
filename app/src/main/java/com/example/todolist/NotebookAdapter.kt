@@ -4,12 +4,17 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -224,25 +229,20 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         })
     }
 
+
+//    TODO  edit image funguje, na stlacenie sa zobrazi image nahrany do db...
+//          teraz treba poriesit to nahravanie a asi aj nieco, nech to tak ostane uchovane
+//          mozno hned pri nacitavani tych notebookov by sa malo spravit to, ze ak image neni null,
+//          wvykona sa toto, ci?
+
     fun editImage(image: ImageView){
 
         val client = OkHttpClient()
-
         //Fetching jwt
         val request = Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/12/icon")
+            .url("http://10.0.2.2:8000/notebooks/7/icon")
             .build()
-        var foo:Bitmap? = null
-
-
-        //val frr = BitmapFactory.decodeFile("/document/image:31")
-        //val stream = ByteArrayOutputStream()
-        //println(android.provider.MediaStore.Images.Media.ALBUM)
-
-        //frr.compress(Bitmap.CompressFormat.PNG, 90, stream)
-
-        //val bytes = stream.toByteArray()
-
+        var foo: ByteArray?
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -251,18 +251,19 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             }
 
             override fun onResponse(call: Call, response: Response) {
-                //println(response.code())
-                //var bar = response.body()?.bytes()
-                //println(bar)
-                //foo = bar?.let { BitmapFactory.decodeByteArray(bar, 0, it?.size) }
-                //println(foo)
+                foo = response.body()?.bytes()
 
-                //val base64Encoded: String = Base64.encodeToString(bar, Base64.DEFAULT)
+                MainScope().launch {
+                    withContext(Dispatchers.Default){
+
+                    }
+                    image.setImageBitmap(BitmapFactory.decodeByteArray(foo, 0, foo!!.size))
+                }
 
             }
         })
 
-        //image.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+
 
 
     }
