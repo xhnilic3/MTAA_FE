@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -24,7 +25,7 @@ class NoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_notebook)
+        setContentView(R.layout.activity_note)
         /**set List*/
         noteList = ArrayList()
         /**set find Id*/
@@ -58,6 +59,11 @@ class NoteActivity : AppCompatActivity() {
             }
         })
 
+
+        findViewById<FloatingActionButton>(R.id.ntSettings).setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java);
+            startActivity(intent);
+        }
     }
 
     private fun addInfo() {

@@ -1,8 +1,11 @@
 package com.example.todolist
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -43,7 +46,10 @@ class NotebookActivity : AppCompatActivity() {
 //            startActivity(intent);
 //        }
 
-
+        findViewById<FloatingActionButton>(R.id.ntbSettings).setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java);
+            startActivity(intent);
+        }
 
 
         //Getting stuff from database

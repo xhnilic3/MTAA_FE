@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -34,6 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnCreateAcc).setOnClickListener {
             val intent = Intent(this, CreateAccount::class.java);
+            startActivity(intent);
+        }
+
+        findViewById<FloatingActionButton>(R.id.mainSettings).setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java);
             startActivity(intent);
         }
     }

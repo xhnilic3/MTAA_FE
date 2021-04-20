@@ -1,20 +1,30 @@
 package com.example.todolist
 
+import java.util.Base64;
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
+import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+import android.util.Base64.encodeToString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat.startActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
@@ -40,7 +50,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             popupMenus.inflate(R.menu.notebook_item_context_menu)
             popupMenus.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.open ->{
+                    R.id.open -> {
                         CurrentNotebook.id = position.notebook_id
 
                         val intent = Intent(ctx, NoteActivity::class.java);
@@ -53,47 +63,59 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                         val name = v.findViewById<EditText>(R.id.userName)
                         val label = v.findViewById<EditText>(R.id.label)
                         AlertDialog.Builder(ctx)
-                                .setView(v)
-                                .setPositiveButton("Ok") { dialog, _ ->
-                                    position.notebook_name = name.text.toString()
-                                    position.label = label.text.toString()
-                                    editNotebook(position, name.getText().toString(), label.getText().toString())
-                                    notifyDataSetChanged()
-                                    Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
-                                    dialog.dismiss()
+                            .setView(v)
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                position.notebook_name = name.text.toString()
+                                position.label = label.text.toString()
+                                editNotebook(
+                                    position,
+                                    name.getText().toString(),
+                                    label.getText().toString()
+                                )
+                                notifyDataSetChanged()
+                                Toast.makeText(
+                                    ctx,
+                                    "User Information is Edited",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                dialog.dismiss()
 
-                                }
-                                .setNegativeButton("Cancel") { dialog, _ ->
-                                    dialog.dismiss()
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
 
-                                }
-                                .create()
-                                .show()
+                            }
+                            .create()
+                            .show()
 
                         true
                     }
                     R.id.delete -> {
                         /**set delete*/
                         AlertDialog.Builder(ctx)
-                                .setTitle("Delete")
-                                .setIcon(R.drawable.ic_warning)
-                                .setMessage("Are you sure delete this Information")
-                                .setPositiveButton("Yes") { dialog, _ ->
-                                    notebookList.removeAt(adapterPosition)
-                                    deleteNotebook(position)
-                                    notifyDataSetChanged()
-                                    Toast.makeText(ctx, "Deleted this Information", Toast.LENGTH_SHORT).show()
-                                    dialog.dismiss()
-                                }
-                                .setNegativeButton("No") { dialog, _ ->
-                                    dialog.dismiss()
-                                }
-                                .create()
-                                .show()
+                            .setTitle("Delete")
+                            .setIcon(R.drawable.ic_warning)
+                            .setMessage("Are you sure delete this Information")
+                            .setPositiveButton("Yes") { dialog, _ ->
+                                notebookList.removeAt(adapterPosition)
+                                deleteNotebook(position)
+                                notifyDataSetChanged()
+                                Toast.makeText(
+                                    ctx,
+                                    "Deleted this Information",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("No") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
 
                         true
                     }
-                    R.id.editImage ->{
+                    R.id.editImage -> {
                         editImage(image)
 
                         true
@@ -132,7 +154,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
         val bod = RequestBody.create(
             MediaType.parse("application/json"),
-                Json.encodeToString(CurrentUser.token)
+            Json.encodeToString(CurrentUser.token)
         )
         //Fetching jwt
         val request = Request.Builder()
@@ -184,7 +206,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
     }
 
     fun editImage(image: ImageView){
-        //val bytes:Bitmap = BitmapFactory.decodeFile("C:\\Users\\peter\\Desktop\\school\\MTAA_FE\\app\\src\\main\\res\\drawable");
+
         val client = OkHttpClient()
 
         //Fetching jwt
@@ -193,6 +215,16 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             .build()
         var foo:Bitmap? = null
 
+
+        //val frr = BitmapFactory.decodeFile("/document/image:31")
+        //val stream = ByteArrayOutputStream()
+        //println(android.provider.MediaStore.Images.Media.ALBUM)
+
+        //frr.compress(Bitmap.CompressFormat.PNG, 90, stream)
+
+        //val bytes = stream.toByteArray()
+
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -200,12 +232,19 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             }
 
             override fun onResponse(call: Call, response: Response) {
-                println(response.code())
-                foo = BitmapFactory.decodeStream(response.body()?.byteStream())
+                //println(response.code())
+                //var bar = response.body()?.bytes()
+                //println(bar)
+                //foo = bar?.let { BitmapFactory.decodeByteArray(bar, 0, it?.size) }
+                //println(foo)
+
+                //val base64Encoded: String = Base64.encodeToString(bar, Base64.DEFAULT)
+
             }
         })
 
-        image.setImageBitmap(foo)
+        //image.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+
 
     }
 
