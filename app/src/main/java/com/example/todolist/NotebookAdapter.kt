@@ -3,7 +3,6 @@ package com.example.todolist
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -24,7 +23,7 @@ import kotlin.collections.ArrayList
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
 
-    inner class UserViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var image: ImageView
         var name: TextView
@@ -48,8 +47,8 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                     R.id.open -> {
                         CurrentNotebook.id = position.notebook_id
 
-                        val intent = Intent(ctx, NoteActivity::class.java);
-                        ctx.startActivity(intent);
+                        val intent = Intent(ctx, NoteActivity::class.java)
+                        ctx.startActivity(intent)
 
                         true
                     }
@@ -164,7 +163,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         val newList = notebookList[position]
         holder.name.text = newList.notebook_name
         holder.mLabel.text = newList.label
-        if (notebookList[position].notebook_color == null || notebookList[position].notebook_color == "#000000") notebookList[position].notebook_color = "#777777"
+        if (notebookList[position].notebook_color == "#000000") notebookList[position].notebook_color = "#777777"
         holder.itemView.setBackgroundColor(Color.parseColor(notebookList[position].notebook_color))
 
     }
