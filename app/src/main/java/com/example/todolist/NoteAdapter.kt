@@ -15,7 +15,7 @@ import java.io.IOException
 class
 NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.Adapter<NoteAdapter.UserViewHolder>() {
 
-    inner class UserViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var name: TextView
         var mLabel: TextView
@@ -32,7 +32,7 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
             val position = noteList[adapterPosition]
             val popupMenus = PopupMenu(ctx, view)
             popupMenus.inflate(R.menu.note_item_context_menu)
-//            TODO toto si nako rozbehaj, prosim
+
             popupMenus.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.noteEditText -> {

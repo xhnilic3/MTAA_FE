@@ -53,16 +53,16 @@ class NoteActivity : AppCompatActivity() {
                 println(CurrentNotebook.id)
                 for (item in foo) noteList.add(item)
                 //Thread handling
-                this@NoteActivity.runOnUiThread(java.lang.Runnable {
+                this@NoteActivity.runOnUiThread {
                     noteAdapter.notifyDataSetChanged()
-                })
+                }
             }
         })
 
 
         findViewById<FloatingActionButton>(R.id.ntSettings).setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -109,16 +109,16 @@ class NoteActivity : AppCompatActivity() {
                     println(response.code())
                     if(response.code() == 201){
                         //Asigning token to global class
-                        var newNote = Json.decodeFromString<NoteData>(response.body()?.string().toString())
+                        val newNote = Json.decodeFromString<NoteData>(response.body()?.string().toString())
                         noteList.add(newNote)
                         //Thread handling
-                        this@NoteActivity.runOnUiThread(java.lang.Runnable {
+                        this@NoteActivity.runOnUiThread {
                             noteAdapter.notifyDataSetChanged()
-                        })
+                        }
 
                     }
 
-                    //TODO show message that login information was incorrect
+
                 }
             })
             Toast.makeText(this@NoteActivity,"Adding User Information Success", Toast.LENGTH_SHORT).show()

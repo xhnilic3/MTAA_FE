@@ -45,8 +45,8 @@ class NotebookActivity : AppCompatActivity() {
 //        }
 
         findViewById<FloatingActionButton>(R.id.ntbSettings).setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -65,9 +65,9 @@ class NotebookActivity : AppCompatActivity() {
                 for (item in foo) notebookList.add(item)
                 // println(item)//item.setBackgroundColor(Color.parseColor("#000000"))
                 //Thread handling
-                this@NotebookActivity.runOnUiThread(java.lang.Runnable {
+                this@NotebookActivity.runOnUiThread {
                     notebookAdapter.notifyDataSetChanged()
-                })
+                }
             }
         })
         //userAdapter.notifyDataSetChanged()
@@ -119,16 +119,16 @@ class NotebookActivity : AppCompatActivity() {
                     println(response.code())
                     if(response.code() == 201){
                         //Asigning token to global class
-                        var newNotebook = Json.decodeFromString<NotebookData>(response.body()?.string().toString())
+                        val newNotebook = Json.decodeFromString<NotebookData>(response.body()?.string().toString())
                         notebookList.add(newNotebook)
                         //Thread handling
-                        this@NotebookActivity.runOnUiThread(java.lang.Runnable {
+                        this@NotebookActivity.runOnUiThread {
                             notebookAdapter.notifyDataSetChanged()
-                        })
+                        }
 
                     }
 
-                    //TODO show message that login information was incorrect
+
                 }
             })
             Toast.makeText(this@NotebookActivity,"Adding User Information Success",Toast.LENGTH_SHORT).show()

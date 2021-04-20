@@ -232,7 +232,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 //    TODO  edit image funguje, na stlacenie sa zobrazi image nahrany do db...
 //          teraz treba poriesit to nahravanie a asi aj nieco, nech to tak ostane uchovane
 //          mozno hned pri nacitavani tych notebookov by sa malo spravit to, ze ak image neni null,
-//          wvykona sa toto, ci?
+//          vykona sa toto, ci? Rano sa mi k tomuto vyjadri, pls
 
     fun editImage(image: ImageView){
 
