@@ -2,8 +2,10 @@ package com.example.todolist
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
@@ -27,7 +29,9 @@ class CreateAccount : AppCompatActivity() {
             val pass = findViewById<EditText>(R.id.edPass).getText().toString();
             val mail = findViewById<EditText>(R.id.edMail).getText().toString();
 
-            if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty()){
+
+
+            if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty() and Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
                 //Fetching data from input fields
                 var json = "{\"username\": \"$name\", \"password\": \"$pass\", \"email\": \"$mail\"}"
 
@@ -77,6 +81,12 @@ class CreateAccount : AppCompatActivity() {
 
 
 
+            }
+            else{
+                this@CreateAccount.runOnUiThread {
+                    Toast.makeText(this@CreateAccount, "Wrong credentials!", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
 
