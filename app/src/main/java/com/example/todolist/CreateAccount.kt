@@ -25,18 +25,18 @@ class CreateAccount : AppCompatActivity() {
 
         //Create user button listener
         findViewById<Button>(R.id.btnCreate).setOnClickListener{
-            val name = findViewById<EditText>(R.id.edName).getText().toString();
-            val pass = findViewById<EditText>(R.id.edPass).getText().toString();
-            val mail = findViewById<EditText>(R.id.edMail).getText().toString();
+            val name = findViewById<EditText>(R.id.edName).getText().toString()
+            val pass = findViewById<EditText>(R.id.edPass).getText().toString()
+            val mail = findViewById<EditText>(R.id.edMail).getText().toString()
 
 
 
             if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty() and Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
                 //Fetching data from input fields
-                var json = "{\"username\": \"$name\", \"password\": \"$pass\", \"email\": \"$mail\"}"
+                val json = "{\"username\": \"$name\", \"password\": \"$pass\", \"email\": \"$mail\"}"
 
                 //Preparing post body
-                var body = RequestBody.create(
+                val body = RequestBody.create(
                     MediaType.parse("application/json"), json
                 )
 
@@ -72,8 +72,8 @@ class CreateAccount : AppCompatActivity() {
                             override fun onResponse(call: Call, response: Response) {
                                 //Asigning token to global class
                                 CurrentUser.token = Json.decodeFromString<Token>(response.body()?.string().toString())
-                                val intent = Intent(this@CreateAccount, MainActivity::class.java);
-                                startActivity(intent);
+                                val intent = Intent(this@CreateAccount, MainActivity::class.java)
+                                startActivity(intent)
                             }
                         })
                     }
@@ -91,8 +91,8 @@ class CreateAccount : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnCancel).setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -116,7 +116,7 @@ class CreateAccount : AppCompatActivity() {
                 @Serializable
                 data class Token(var user:User, var jwtToken:String, var refreshToken:String)
 
-                var foo = Json.decodeFromString<Token>(response.body()?.string().toString())
+                val foo = Json.decodeFromString<Token>(response.body()?.string().toString())
 
                 println(foo.user.userName)
             }

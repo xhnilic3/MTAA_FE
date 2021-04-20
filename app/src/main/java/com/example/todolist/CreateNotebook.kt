@@ -12,12 +12,12 @@ class CreateNotebook : AppCompatActivity() {
         setContentView(R.layout.activity_create_notebook)
 
         findViewById<Button>(R.id.btnCancelNotebook).setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
         findViewById<Button>(R.id.btnConfirmNotebook).setOnClickListener{
-            val name = findViewById<EditText>(R.id.edNtbName).getText().toString();
+            findViewById<EditText>(R.id.edNtbName).getText().toString()
         }
     }
 }

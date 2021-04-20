@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
 //        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show()
-//            val intent = Intent(this, Notebooks::class.java);
-//            startActivity(intent);
+//            val intent = Intent(this, Notebooks::class.java)
+//            startActivity(intent)
 //        }
 
         findViewById<Button>(R.id.btnLogin).setOnClickListener {
@@ -34,18 +34,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnCreateAcc).setOnClickListener {
-            val intent = Intent(this, CreateAccount::class.java);
-            startActivity(intent);
+            val intent = Intent(this, CreateAccount::class.java)
+            startActivity(intent)
         }
 
         findViewById<FloatingActionButton>(R.id.mainSettings).setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity() {
 
     fun logButton() {
         val client = OkHttpClient()
-        val name = findViewById<EditText>(R.id.logName).getText().toString();
-        val pass = findViewById<EditText>(R.id.logPass).getText().toString();
+        val name = findViewById<EditText>(R.id.logName).getText().toString()
+        val pass = findViewById<EditText>(R.id.logPass).getText().toString()
 
         val loginBod = RequestBody.create(
             MediaType.parse("application/json"),
@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
                     //Asigning token to global class
                     CurrentUser.token =
                         Json.decodeFromString<Token>(response.body()?.string().toString())
-                    val intent = Intent(this@MainActivity, NotebookActivity::class.java);
-                    startActivity(intent);
+                    val intent = Intent(this@MainActivity, NotebookActivity::class.java)
+                    startActivity(intent)
                 }
                 else {
                     this@MainActivity.runOnUiThread {

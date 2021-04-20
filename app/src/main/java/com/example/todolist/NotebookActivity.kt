@@ -39,11 +39,6 @@ class NotebookActivity : AppCompatActivity() {
         addsBtn.setOnClickListener { addInfo() }
 
 
-//        findViewById<Button>(R.id.open).setOnClickListener{
-//            val intent = Intent(this, NoteActivity::class.java);
-//            startActivity(intent);
-//        }
-
         findViewById<FloatingActionButton>(R.id.ntbSettings).setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
