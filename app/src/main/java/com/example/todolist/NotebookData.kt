@@ -13,7 +13,7 @@ data class NotebookData (
         val notebook_type:Int,
         var notebook_name:String,
         var label:String?,
-        val notebook_color:String,
+        var notebook_color:String,
         val update_date:String,
         val collaborator_id:Int?
 )

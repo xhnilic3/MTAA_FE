@@ -1,6 +1,7 @@
 package com.example.todolist
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -65,6 +67,7 @@ class NotebookActivity : AppCompatActivity() {
                 val foo = Json.decodeFromString<List<NotebookData>>(response.body()?.string().toString())
 
                 for (item in foo) notebookList.add(item)
+                // println(item)//item.setBackgroundColor(Color.parseColor("#000000"))
                 //Thread handling
                 this@NotebookActivity.runOnUiThread(java.lang.Runnable {
                     notebookAdapter.notifyDataSetChanged()
@@ -98,7 +101,7 @@ class NotebookActivity : AppCompatActivity() {
                         "notebook_type": 1,
                         "notebook_name": "${names}",
                         "label": "${label}",
-                        "notebook_color": "#000000",
+                        "notebook_color": "#777777",
                         "collaborator_id": null
                     }
                 """.trimIndent()

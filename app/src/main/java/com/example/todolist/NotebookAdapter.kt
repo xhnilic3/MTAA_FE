@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -117,7 +118,6 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                     }
                     R.id.editImage -> {
                         editImage(image)
-
                         true
                     }
                     else -> true
@@ -143,6 +143,9 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         val newList = notebookList[position]
         holder.name.text = newList.notebook_name
         holder.mLabel.text = newList.label
+        if (notebookList[position].notebook_color == null || notebookList[position].notebook_color == "#000000") notebookList[position].notebook_color = "#777777"
+        holder.itemView.setBackgroundColor(Color.parseColor(notebookList[position].notebook_color))
+
     }
 
     override fun getItemCount(): Int {
