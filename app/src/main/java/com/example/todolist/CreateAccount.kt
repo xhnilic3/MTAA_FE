@@ -26,65 +26,87 @@ class CreateAccount : AppCompatActivity() {
             val pass = findViewById<EditText>(R.id.edPass).text.toString()
             val mail = findViewById<EditText>(R.id.edMail).text.toString()
 
+            //Existing user check
 
-
-            if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty() and Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
-                //Fetching data from input fields
-                val json = "{\"username\": \"$name\", \"password\": \"$pass\", \"email\": \"$mail\"}"
-
-                //Preparing post body
-                val body = RequestBody.create(
-                    MediaType.parse("application/json"), json
-                )
-
-                //Creating user in database
-                var request = Request.Builder()
-                    .url("http://10.0.2.2:8000/users/")
-                    .post(body)
-                    .build()
-
-                client.newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        throw e
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        println(response.body()?.string())
-                        //Preparing body for login
-                        val newBody = RequestBody.create(
-                            MediaType.parse("application/json"), "{\"username\": \"$name\", \"password\": \"$pass\"}"
-                        )
-
-                        //Fetching jwt
-                        request = Request.Builder()
-                            .url("http://10.0.2.2:8000/users/auth/login")
-                            .post(newBody)
-                            .build()
-
-                        client.newCall(request).enqueue(object : Callback {
-                            override fun onFailure(call: Call, e: IOException) {
-                                throw e
-                            }
-
-                            override fun onResponse(call: Call, response: Response) {
-                                //Assigning token to global class
-                                CurrentUser.token = Json.decodeFromString(response.body()?.string().toString())
-                                val intent = Intent(this@CreateAccount, NotebookActivity::class.java)
-                                startActivity(intent)
-                            }
-                        })
-                    }
-                })
-
-
-
-            }
-            else{
-                this@CreateAccount.runOnUiThread {
-                    Toast.makeText(this@CreateAccount, "Wrong credentials!", Toast.LENGTH_SHORT)
-                        .show()
+            client.newCall(Request.Builder()
+                .url("http://10.0.2.2:8000/users/user/?name=${name}")
+                .build()
+            ).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    throw e
                 }
-            }
+
+                override fun onResponse(call: Call, response: Response) {
+                    println(response.code())
+                    println("debug")
+                    if(response.code() != 200){
+                        if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty() and Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
+                            //Fetching data from input fields
+                            val json = "{\"username\": \"$name\", \"password\": \"$pass\", \"email\": \"$mail\"}"
+
+                            //Preparing post body
+                            val body = RequestBody.create(
+                                MediaType.parse("application/json"), json
+                            )
+
+                            //Creating user in database
+                            client.newCall(Request.Builder()
+                                .url("http://10.0.2.2:8000/users/")
+                                .post(body)
+                                .build()
+                            ).enqueue(object : Callback {
+                                override fun onFailure(call: Call, e: IOException) {
+                                    throw e
+                                }
+
+                                override fun onResponse(call: Call, response: Response) {
+                                    //Preparing body for login
+                                    val newBody = RequestBody.create(
+                                        MediaType.parse("application/json"), "{\"username\": \"$name\", \"password\": \"$pass\"}"
+                                    )
+
+                                    //Fetching jwt
+                                    client.newCall(Request.Builder()
+                                        .url("http://10.0.2.2:8000/users/auth/login")
+                                        .post(newBody)
+                                        .build()
+                                    ).enqueue(object : Callback {
+                                        override fun onFailure(call: Call, e: IOException) {
+                                            throw e
+                                        }
+
+                                        override fun onResponse(call: Call, response: Response) {
+                                            //Assigning token to global class
+                                            CurrentUser.token = Json.decodeFromString(response.body()?.string().toString())
+                                            val intent = Intent(this@CreateAccount, NotebookActivity::class.java)
+                                            startActivity(intent)
+                                        }
+                                    })
+                                }
+                            })
+
+
+
+                        }
+                        else{
+                            this@CreateAccount.runOnUiThread {
+                                Toast.makeText(this@CreateAccount, "Wrong credentials!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
+                    else{
+                        this@CreateAccount.runOnUiThread {
+                            Toast.makeText(this@CreateAccount, "User already exists", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+
+                }
+            })
+
+
+
         }
 
         findViewById<Button>(R.id.btnCancel).setOnClickListener {
