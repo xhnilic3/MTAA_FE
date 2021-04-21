@@ -51,4 +51,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
+    implementation 'com.apandroid:colorwheel:1.1.12'
 }

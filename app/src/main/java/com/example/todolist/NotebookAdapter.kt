@@ -9,7 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.recyclerview.widget.RecyclerView
+import com.apandroid.colorwheel.ColorWheel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -64,7 +68,8 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                                 editNotebook(
                                     position,
                                     name.getText().toString(),
-                                    label.getText().toString()
+                                    label.getText().toString(),
+                                    position.notebook_color
                                 )
                                 notifyDataSetChanged()
                                 Toast.makeText(
@@ -115,12 +120,13 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                     }
                     R.id.editColor -> {
                         val v = LayoutInflater.from(ctx).inflate(R.layout.change_color_notebook, null)
-                        val color = v.findViewById<EditText>(R.id.notebookColor)
+                        val color = v.findViewById<ColorWheel>(R.id.notebookColor)
 
                         AlertDialog.Builder(ctx)
                             .setView(v)
                             .setPositiveButton("Ok") { dialog, _ ->
-                                position.notebook_color = color.text.toString()
+                                position.notebook_color = "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}"
+                                editNotebook(position, position.notebook_name, position.label, "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}")
                                 notifyDataSetChanged()
                                 Toast.makeText(
                                     ctx,
@@ -197,7 +203,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         })
     }
 
-    fun editNotebook(ntb: NotebookData, name: String?, label: String?){
+    fun editNotebook(ntb: NotebookData, name: String?, label: String?, col: String?){
         val client = OkHttpClient()
         val bod = RequestBody.create(
             MediaType.parse("application/json"),
@@ -205,7 +211,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             {
               "notebook_name": "${name}",
               "label": "${label}",
-              "notebook_color": "${ntb.notebook_color}",
+              "notebook_color": "${col}",
               "collaborator_id": ${ntb.collaborator_id}
             }
             """.trimIndent()
@@ -228,7 +234,6 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         })
     }
 
-
 //    TODO  edit image funguje, na stlacenie sa zobrazi image nahrany do db...
 //          teraz treba poriesit to nahravanie a asi aj nieco, nech to tak ostane uchovane
 //          mozno hned pri nacitavani tych notebookov by sa malo spravit to, ze ak image neni null,
@@ -239,7 +244,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         val client = OkHttpClient()
         //Fetching jwt
         val request = Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/7/icon")
+            .url("http://10.0.2.2:8000/notebooks/41/icon")
             .build()
         var foo: ByteArray?
 

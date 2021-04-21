@@ -6,10 +6,7 @@ import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import okhttp3.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -25,9 +22,9 @@ class CreateAccount : AppCompatActivity() {
 
         //Create user button listener
         findViewById<Button>(R.id.btnCreate).setOnClickListener{
-            val name = findViewById<EditText>(R.id.edName).getText().toString()
-            val pass = findViewById<EditText>(R.id.edPass).getText().toString()
-            val mail = findViewById<EditText>(R.id.edMail).getText().toString()
+            val name = findViewById<EditText>(R.id.edName).text.toString()
+            val pass = findViewById<EditText>(R.id.edPass).text.toString()
+            val mail = findViewById<EditText>(R.id.edMail).text.toString()
 
 
 
@@ -70,9 +67,9 @@ class CreateAccount : AppCompatActivity() {
                             }
 
                             override fun onResponse(call: Call, response: Response) {
-                                //Asigning token to global class
-                                CurrentUser.token = Json.decodeFromString<Token>(response.body()?.string().toString())
-                                val intent = Intent(this@CreateAccount, MainActivity::class.java)
+                                //Assigning token to global class
+                                CurrentUser.token = Json.decodeFromString(response.body()?.string().toString())
+                                val intent = Intent(this@CreateAccount, NotebookActivity::class.java)
                                 startActivity(intent)
                             }
                         })
@@ -94,32 +91,5 @@ class CreateAccount : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-    }
-
-    fun run(url: String, Body:RequestBody) {
-        val request = Request.Builder()
-            .url(url)
-            .post(Body)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                throw e
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                //println(response.body()?.string())
-                @Keep
-                @Serializable
-                data class User(var userName: String, var email: String, var issual_time: Int, var expire_time: Int)
-                @Keep
-                @Serializable
-                data class Token(var user:User, var jwtToken:String, var refreshToken:String)
-
-                val foo = Json.decodeFromString<Token>(response.body()?.string().toString())
-
-                println(foo.user.userName)
-            }
-        })
     }
 }
