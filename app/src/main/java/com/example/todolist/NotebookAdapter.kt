@@ -29,16 +29,12 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        var image: ImageView
-        var name: TextView
-        var mLabel: TextView
-        var mMenus: ImageView
+        private var image: ImageView = view.findViewById(R.id.mImage)
+        var name: TextView = view.findViewById(R.id.mTitle)
+        var mLabel: TextView = view.findViewById(R.id.mSubTitle)
+        private var mMenus: ImageView = view.findViewById(R.id.mMenus)
 
         init {
-            image = view.findViewById(R.id.mImage)
-            name = view.findViewById<TextView>(R.id.mTitle)
-            mLabel = view.findViewById<TextView>(R.id.mSubTitle)
-            mMenus = view.findViewById(R.id.mMenus)
             mMenus.setOnClickListener { popupMenus(it) }
         }
 
@@ -67,14 +63,14 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                                 position.label = label.text.toString()
                                 editNotebook(
                                     position,
-                                    name.getText().toString(),
-                                    label.getText().toString(),
+                                    name.text.toString(),
+                                    label.text.toString(),
                                     position.notebook_color
                                 )
                                 notifyDataSetChanged()
                                 Toast.makeText(
                                     ctx,
-                                    "User Information is Edited",
+                                    "Notebook Information is Edited",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 dialog.dismiss()
@@ -130,7 +126,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                                 notifyDataSetChanged()
                                 Toast.makeText(
                                     ctx,
-                                    "User Information is Edited",
+                                    "Notebook color changed",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 dialog.dismiss()
@@ -209,9 +205,9 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             MediaType.parse("application/json"),
             """
             {
-              "notebook_name": "${name}",
-              "label": "${label}",
-              "notebook_color": "${col}",
+              "notebook_name": "$name",
+              "label": "$label",
+              "notebook_color": "$col",
               "collaborator_id": ${ntb.collaborator_id}
             }
             """.trimIndent()

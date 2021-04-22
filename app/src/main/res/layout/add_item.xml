@@ -43,7 +43,7 @@
         <EditText
             android:id="@+id/label"
             android:hint="Notebook label"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:textColor="@color/purple_500"
             android:background="@drawable/shape_background"
             android:padding="15dp"

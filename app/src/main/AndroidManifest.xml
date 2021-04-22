@@ -13,8 +13,6 @@
         android:theme="@style/Theme.ToDoList"
         android:usesCleartextTraffic="true">
         <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".Testing" />
-        <activity android:name=".CreateNotebook" />
         <activity android:name=".CreateAccount" />
         <activity android:name=".NotebookActivity" />
         <activity android:name=".NoteActivity" />
