@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -65,7 +67,8 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                                     position,
                                     name.text.toString(),
                                     label.text.toString(),
-                                    position.notebook_color
+                                    position.notebook_color,
+                                    position.collaborator_id
                                 )
                                 notifyDataSetChanged()
                                 Toast.makeText(
@@ -122,7 +125,13 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                             .setView(v)
                             .setPositiveButton("Ok") { dialog, _ ->
                                 position.notebook_color = "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}"
-                                editNotebook(position, position.notebook_name, position.label, "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}")
+                                editNotebook(
+                                    position,
+                                    position.notebook_name,
+                                    position.label,
+                                    "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}",
+                                    position.collaborator_id
+                                )
                                 notifyDataSetChanged()
                                 Toast.makeText(
                                     ctx,
@@ -140,6 +149,26 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                             .show()
 
 
+                        true
+                    }
+                    R.id.shareNotebook ->{
+                        val v = LayoutInflater.from(ctx).inflate(R.layout.share_notebook, null)
+                        val name = v.findViewById<EditText>(R.id.collabName)
+
+                        AlertDialog.Builder(ctx)
+                            .setView(v)
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                shareNotebook(position, name.text.toString())
+                                notifyDataSetChanged()
+                                dialog.dismiss()
+
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+
+                            }
+                            .create()
+                            .show()
                         true
                     }
                     else -> true
@@ -165,9 +194,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         val newList = notebookList[position]
         holder.name.text = newList.notebook_name
         holder.mLabel.text = newList.label
-        if (notebookList[position].notebook_color == "#000000") notebookList[position].notebook_color = "#777777"
         holder.itemView.setBackgroundColor(Color.parseColor(notebookList[position].notebook_color))
-
     }
 
     override fun getItemCount(): Int {
@@ -181,13 +208,12 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             MediaType.parse("application/json"),
             Json.encodeToString(CurrentUser.token)
         )
-        //Fetching jwt
-        val request = Request.Builder()
+
+        client.newCall(Request.Builder()
             .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
             .delete(bod)
             .build()
-
-        client.newCall(request).enqueue(object : Callback {
+        ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
                 throw e
@@ -199,7 +225,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         })
     }
 
-    fun editNotebook(ntb: NotebookData, name: String?, label: String?, col: String?){
+    fun editNotebook(ntb: NotebookData, name: String?, label: String?, col: String?, colab: Int?){
         val client = OkHttpClient()
         val bod = RequestBody.create(
             MediaType.parse("application/json"),
@@ -208,17 +234,16 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
               "notebook_name": "$name",
               "label": "$label",
               "notebook_color": "$col",
-              "collaborator_id": ${ntb.collaborator_id}
+              "collaborator_id": $colab
             }
             """.trimIndent()
         )
         //Fetching jwt
-        val request = Request.Builder()
+        client.newCall(Request.Builder()
             .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
             .put(bod)
             .build()
-
-        client.newCall(request).enqueue(object : Callback {
+        ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
                 throw e
@@ -238,13 +263,12 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
     fun editImage(image: ImageView){
 
         val client = OkHttpClient()
-        //Fetching jwt
-        val request = Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/41/icon")
-            .build()
         var foo: ByteArray?
 
-        client.newCall(request).enqueue(object : Callback {
+        client.newCall(Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/41/icon")
+            .build()
+        ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
                 throw e
@@ -259,15 +283,45 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                     }
                     image.setImageBitmap(BitmapFactory.decodeByteArray(foo, 0, foo!!.size))
                 }
-
             }
         })
-
-
-
-
     }
 
+    fun shareNotebook(ntb: NotebookData, name: String?){
+        val client = OkHttpClient()
+        client.newCall(Request.Builder()
+            .url("http://10.0.2.2:8000/users/user/?name=$name")
+            .build()
+        ).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
 
-
+            override fun onResponse(call: Call, response: Response) {
+                Looper.prepare()
+                if(response.code() != 200){
+                    Toast.makeText(
+                        ctx,
+                        "User with that name doesn't exist",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else{
+                    editNotebook(
+                        ntb,
+                        ntb.notebook_name,
+                        ntb.label,
+                        ntb.notebook_color,
+                        response.body()?.string()?.toInt()
+                    )
+                    Toast.makeText(
+                        ctx,
+                        "Shared successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
 }

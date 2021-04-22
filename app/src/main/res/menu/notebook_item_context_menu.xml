@@ -27,5 +27,10 @@
         android:title="Delete"
         android:icon="@drawable/ic_delete"
         />
+    <item
+        android:id="@+id/shareNotebook"
+        android:title="Share"
+        android:icon="@drawable/ic_delete"
+        />
 
 </menu>

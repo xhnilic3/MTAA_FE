@@ -37,8 +37,6 @@ class CreateAccount : AppCompatActivity() {
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    println(response.code())
-                    println("debug")
                     if(response.code() != 200){
                         if(name.isNotEmpty() and pass.isNotEmpty() and mail.isNotEmpty() and Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
                             //Fetching data from input fields

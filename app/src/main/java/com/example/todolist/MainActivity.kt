@@ -70,12 +70,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         //Fetching jwt
-        val request = Request.Builder()
+        client.newCall(Request.Builder()
             .url("http://10.0.2.2:8000/users/auth/login")
             .post(loginBod)
             .build()
-
-        client.newCall(request).enqueue(object : Callback {
+        ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 throw e
             }
