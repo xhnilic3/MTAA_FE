@@ -1,6 +1,5 @@
 package com.example.todolist
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -60,10 +59,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun logButton() {
+    private fun logButton() {
         val client = OkHttpClient()
-        val name = findViewById<EditText>(R.id.logName).getText().toString()
-        val pass = findViewById<EditText>(R.id.logPass).getText().toString()
+        val name = findViewById<EditText>(R.id.logName).text.toString()
+        val pass = findViewById<EditText>(R.id.logPass).text.toString()
 
         val loginBod = RequestBody.create(
             MediaType.parse("application/json"),
@@ -83,9 +82,9 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.code() == 200) {
-                    //Asigning token to global class
+                    //Assigning token to global class
                     CurrentUser.token =
-                        Json.decodeFromString<Token>(response.body()?.string().toString())
+                        Json.decodeFromString(response.body()?.string().toString())
                     val intent = Intent(this@MainActivity, NotebookActivity::class.java)
                     startActivity(intent)
                 }

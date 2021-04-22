@@ -17,14 +17,11 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        var name: TextView
-        var mLabel: TextView
-        var mMenus: ImageView
+        var name: TextView = view.findViewById(R.id.mNotebookTitle)
+        var mLabel: TextView = view.findViewById(R.id.mNote)
+        private var mMenus: ImageView = view.findViewById(R.id.mMenus)
 
         init {
-            name = view.findViewById<TextView>(R.id.mNotebookTitle)
-            mLabel = view.findViewById<TextView>(R.id.mNote)
-            mMenus = view.findViewById(R.id.mMenus)
             mMenus.setOnClickListener { popupMenus(it) }
         }
 
@@ -44,7 +41,7 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
                             .setPositiveButton("Ok") { dialog, _ ->
                                 position.name = name.text.toString()
                                 position.note_content = label.text.toString()
-                                editNote(position, name.getText().toString(), label.getText().toString())
+                                editNote(position, name.text.toString(), label.text.toString())
                                 notifyDataSetChanged()
                                 Toast.makeText(ctx, "User Information is Edited", Toast.LENGTH_SHORT).show()
                                 dialog.dismiss()
@@ -135,14 +132,14 @@ NoteAdapter(val ctx: Context, val noteList: ArrayList<NoteData>) : RecyclerView.
         })
     }
 
-    fun editNote(nt: NoteData, name: String?, label: String?){
+    private fun editNote(nt: NoteData, name: String?, label: String?){
         val client = OkHttpClient()
         val bod = RequestBody.create(
             MediaType.parse("application/json"),
             """
             {
-                "name": "${name}",
-                "note_content": "${label}"
+                "name": "$name",
+                "note_content": "$label"
             }
             """.trimIndent()
         )

@@ -86,9 +86,9 @@ class NoteActivity : AppCompatActivity() {
             val bod = RequestBody.create(
                 MediaType.parse("application/json"), """
                 {
-                  "name": "${names}",
+                  "name": "$names",
                   "note_type": 1,
-                  "note_content": "${label}"
+                  "note_content": "$label"
                 }
                 """.trimIndent()
             )

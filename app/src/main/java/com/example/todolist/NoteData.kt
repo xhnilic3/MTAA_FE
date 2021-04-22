@@ -2,7 +2,6 @@ package com.example.todolist
 
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
-import java.sql.Date
 
 @Keep
 @Serializable

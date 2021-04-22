@@ -18,7 +18,6 @@ import java.io.IOException
 class NotebookActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private lateinit var addsBtn:FloatingActionButton
-    private lateinit var openBtn:FloatingActionButton
     private lateinit var recv:RecyclerView
     private lateinit var notebookList:ArrayList<NotebookData>
     private lateinit var notebookAdapter: NotebookAdapter
@@ -90,9 +89,9 @@ class NotebookActivity : AppCompatActivity() {
                     {
                         "creator_id": ${CurrentUser.token.user.id},
                         "notebook_type": 1,
-                        "notebook_name": "${names}",
-                        "label": "${label}",
-                        "notebook_color": "#777777",
+                        "notebook_name": "$names",
+                        "label": "$label",
+                        "notebook_color": "#34eb8f",
                         "collaborator_id": null
                     }
                 """.trimIndent()
@@ -113,7 +112,7 @@ class NotebookActivity : AppCompatActivity() {
                 override fun onResponse(call: Call, response: Response) {
                     println(response.code())
                     if(response.code() == 201){
-                        //Asigning token to global class
+                        //Assigning token to global class
                         val newNotebook = Json.decodeFromString<NotebookData>(response.body()?.string().toString())
                         notebookList.add(newNotebook)
                         //Thread handling
