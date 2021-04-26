@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +22,6 @@ import kotlin.collections.ArrayList
 
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
-    private var dataUri:Uri? = null
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -31,8 +29,6 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         var name: TextView = view.findViewById(R.id.mTitle)
         var mLabel: TextView = view.findViewById(R.id.mSubTitle)
         private var mMenus: ImageView = view.findViewById(R.id.mMenus)
-        private val pickImage = 100
-
 
         init {
             mMenus.setOnClickListener { popupMenus(it) }

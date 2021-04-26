@@ -4,7 +4,7 @@ import android.widget.ImageView
 
 interface ImageFatcher {
 
-    public fun onEditImageClick(imageView: ImageView){
+    fun onEditImageClick(imageView: ImageView){
 
     }
 }

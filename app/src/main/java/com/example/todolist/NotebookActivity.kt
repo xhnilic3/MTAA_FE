@@ -27,7 +27,7 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
     private lateinit var recv:RecyclerView
     private lateinit var notebookList:ArrayList<NotebookData>
     private lateinit var notebookAdapter: NotebookAdapter
-    private var siskinImageView: ImageView? = null
+    private var notebookIconImageView: ImageView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +95,7 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
     override fun onEditImageClick(imageView: ImageView) {
         super.onEditImageClick(imageView)
 
-        siskinImageView = imageView
+        notebookIconImageView = imageView
 
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         intent.type = "image/*"
@@ -111,7 +111,7 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (siskinImageView != null) {
+        if (notebookIconImageView != null) {
             println("kurvapica")}
 
         if (resultCode != RESULT_OK) {return;}
@@ -121,13 +121,8 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
             if (extras != null) {
                 println("mrkva")
                 val bitmap = uriToBitmap(extras)
-                siskinImageView?.setImageBitmap(bitmap)
-                if (bitmap == null) {
-                    println("ejdopici")
-                }
+                notebookIconImageView?.setImageBitmap(bitmap)
             }
-            else {
-                println("panvica")}
         }
     }
 
