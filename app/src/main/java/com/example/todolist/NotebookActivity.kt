@@ -21,7 +21,7 @@ import okhttp3.*
 import java.io.IOException
 
 
-class NotebookActivity : AppCompatActivity(), ImageFatcher {
+class NotebookActivity : AppCompatActivity(), ImageFetcher {
     private val client = OkHttpClient()
     private lateinit var addsBtn:FloatingActionButton
     private lateinit var recv:RecyclerView

@@ -2,7 +2,7 @@ package com.example.todolist
 
 import android.widget.ImageView
 
-interface ImageFatcher {
+interface ImageFetcher {
 
     fun onEditImageClick(imageView: ImageView){
 
