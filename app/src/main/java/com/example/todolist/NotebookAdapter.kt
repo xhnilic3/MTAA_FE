@@ -3,8 +3,8 @@ package com.example.todolist
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +15,6 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.recyclerview.widget.RecyclerView
 import com.apandroid.colorwheel.ColorWheel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -28,6 +23,7 @@ import kotlin.collections.ArrayList
 
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
+    private var dataUri:Uri? = null
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -35,6 +31,8 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         var name: TextView = view.findViewById(R.id.mTitle)
         var mLabel: TextView = view.findViewById(R.id.mSubTitle)
         private var mMenus: ImageView = view.findViewById(R.id.mMenus)
+        private val pickImage = 100
+
 
         init {
             mMenus.setOnClickListener { popupMenus(it) }
@@ -114,9 +112,17 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                         true
                     }
                     R.id.editImage -> {
-                        editImage(image)
+//                        val intent = Intent(Intent.ACTION_PICK)
+//                        intent.type = "image/*"
+//                        ctx.startActivity(intent)
+//
+                        if (ctx is ImageFatcher) {
+                            ctx.onEditImageClick(image)
+                        }
                         true
                     }
+
+
                     R.id.editColor -> {
                         val v = LayoutInflater.from(ctx).inflate(R.layout.change_color_notebook, null)
                         val color = v.findViewById<ColorWheel>(R.id.notebookColor)
@@ -255,37 +261,11 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         })
     }
 
+
 //    TODO  edit image funguje, na stlacenie sa zobrazi image nahrany do db...
 //          teraz treba poriesit to nahravanie a asi aj nieco, nech to tak ostane uchovane
 //          mozno hned pri nacitavani tych notebookov by sa malo spravit to, ze ak image neni null,
 //          vykona sa toto, ci? Rano sa mi k tomuto vyjadri, pls
-
-    fun editImage(image: ImageView){
-
-        val client = OkHttpClient()
-        var foo: ByteArray?
-
-        client.newCall(Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/41/icon")
-            .build()
-        ).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                println("Fail debug")
-                throw e
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                foo = response.body()?.bytes()
-
-                MainScope().launch {
-                    withContext(Dispatchers.Default){
-
-                    }
-                    image.setImageBitmap(BitmapFactory.decodeByteArray(foo, 0, foo!!.size))
-                }
-            }
-        })
-    }
 
     fun shareNotebook(ntb: NotebookData, name: String?){
         val client = OkHttpClient()
