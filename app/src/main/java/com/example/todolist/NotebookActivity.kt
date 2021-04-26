@@ -70,14 +70,12 @@ class NotebookActivity : AppCompatActivity(), ImageFetcher {
                 )
 
                 for (item in foo) notebookList.add(item)
-                // println(item)//item.setBackgroundColor(Color.parseColor("#000000"))
                 //Thread handling
                 this@NotebookActivity.runOnUiThread {
                     notebookAdapter.notifyDataSetChanged()
                 }
             }
         })
-        //userAdapter.notifyDataSetChanged()
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -111,15 +109,11 @@ class NotebookActivity : AppCompatActivity(), ImageFetcher {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (notebookIconImageView != null) {
-            println("kurvapica")}
-
         if (resultCode != RESULT_OK) {return;}
 
         if (requestCode == 1) {
             val extras: Uri? = data?.data
             if (extras != null) {
-                println("mrkva")
                 val bitmap = uriToBitmap(extras)
                 notebookIconImageView?.setImageBitmap(bitmap)
             }

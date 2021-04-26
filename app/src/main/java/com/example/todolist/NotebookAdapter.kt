@@ -108,10 +108,6 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
                         true
                     }
                     R.id.editImage -> {
-//                        val intent = Intent(Intent.ACTION_PICK)
-//                        intent.type = "image/*"
-//                        ctx.startActivity(intent)
-//
                         if (ctx is ImageFetcher) {
                             ctx.onEditImageClick(image)
                         }
