@@ -254,11 +254,10 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             Json.encodeToString(CurrentUser.token)
         )
 
-        client.newCall(
-            Request.Builder()
-                .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
-                .delete(bod)
-                .build()
+        client.newCall(Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+            .delete(bod)
+            .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -285,11 +284,10 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             """.trimIndent()
         )
         //Fetching jwt
-        client.newCall(
-            Request.Builder()
-                .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
-                .put(bod)
-                .build()
+        client.newCall(Request.Builder()
+            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+            .put(bod)
+            .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -310,10 +308,9 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
     fun shareNotebook(ntb: NotebookData, name: String?){
         val client = OkHttpClient()
-        client.newCall(
-            Request.Builder()
-                .url("http://10.0.2.2:8000/users/user/?name=$name")
-                .build()
+        client.newCall(Request.Builder()
+            .url("http://10.0.2.2:8000/users/user/?name=$name")
+            .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -322,13 +319,14 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
             override fun onResponse(call: Call, response: Response) {
                 Looper.prepare()
-                if (response.code() != 200) {
+                if(response.code() != 200){
                     Toast.makeText(
                         ctx,
                         "User with that name doesn't exist",
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
+                }
+                else{
                     editNotebook(
                         ntb,
                         ntb.notebook_name,

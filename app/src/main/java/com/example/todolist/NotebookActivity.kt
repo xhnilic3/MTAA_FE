@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
-class NotebookActivity : AppCompatActivity(), ImageFatcher {
+class NotebookActivity : AppCompatActivity(), ImageFetcher {
     private val client = OkHttpClient()
     private lateinit var addsBtn:FloatingActionButton
     private lateinit var recv:RecyclerView
@@ -73,7 +73,6 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
                 )
 
                 for (item in foo) notebookList.add(item)
-                for (item in notebookList)
                 // println(item)//item.setBackgroundColor(Color.parseColor("#000000"))
                 //Thread handling
                 this@NotebookActivity.runOnUiThread {
