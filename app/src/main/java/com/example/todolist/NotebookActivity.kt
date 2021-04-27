@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.Menu
 import android.widget.EditText
@@ -18,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.*
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
@@ -28,6 +30,7 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
     private lateinit var notebookList:ArrayList<NotebookData>
     private lateinit var notebookAdapter: NotebookAdapter
     private var notebookIconImageView: ImageView? = null
+    private var ntb: NotebookData? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +73,7 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
                 )
 
                 for (item in foo) notebookList.add(item)
+                for (item in notebookList)
                 // println(item)//item.setBackgroundColor(Color.parseColor("#000000"))
                 //Thread handling
                 this@NotebookActivity.runOnUiThread {
@@ -92,15 +96,16 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
 
 
 
-    override fun onEditImageClick(imageView: ImageView) {
-        super.onEditImageClick(imageView)
+    override fun onEditImageClick(imageView: ImageView, notebo:NotebookData) {
+        super.onEditImageClick(imageView, notebo)
 
         notebookIconImageView = imageView
+        ntb = notebo
 
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         intent.type = "image/*"
         intent.putExtra("return-data", true)
-        intent.putExtra("crop","true")
+        intent.putExtra("crop", "true")
         intent.putExtra("scale", "true")
         intent.putExtra("aspectX", "16")
         intent.putExtra("aspectY", "9")
@@ -111,16 +116,42 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (notebookIconImageView != null) {
-            println("kurvapica")}
 
         if (resultCode != RESULT_OK) {return;}
 
         if (requestCode == 1) {
             val extras: Uri? = data?.data
             if (extras != null) {
-                println("mrkva")
+
                 val bitmap = uriToBitmap(extras)
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+                val encoded: String = Base64.encodeToString(byteArray, Base64.NO_WRAP)
+                val client = OkHttpClient()
+
+                val bod = RequestBody.create(
+                    MediaType.parse("application/json"), """
+                    {
+                        "base64": "$encoded"
+                    }
+                """.trimIndent()
+                )
+                //Creating a notebook
+                client.newCall(Request.Builder()
+                    .url("http://10.0.2.2:8000/notebooks/${ntb?.notebook_id}/icon")
+                    .post(bod)
+                    .build()
+                ).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        println("Fail debug")
+                        throw e
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        println(response.code())
+                    }
+                })
                 notebookIconImageView?.setImageBitmap(bitmap)
             }
         }
@@ -155,13 +186,12 @@ class NotebookActivity : AppCompatActivity(), ImageFatcher {
                 """.trimIndent()
             )
 
-            //Fetching jwt
-            val request = Request.Builder()
+            //Creating a notebook
+            client.newCall(Request.Builder()
                 .url("http://10.0.2.2:8000/notebooks/")
                 .post(bod)
                 .build()
-
-            client.newCall(request).enqueue(object : Callback {
+            ).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     println("Fail debug")
                     throw e

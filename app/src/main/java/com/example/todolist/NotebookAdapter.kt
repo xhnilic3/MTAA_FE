@@ -1,8 +1,10 @@
 package com.example.todolist
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Looper
 import android.view.LayoutInflater
@@ -18,14 +20,14 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
 import java.io.IOException
-import kotlin.collections.ArrayList
+
 
 class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData>) : RecyclerView.Adapter<NotebookAdapter.UserViewHolder>() {
 
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private var image: ImageView = view.findViewById(R.id.mImage)
+        var image: ImageView = view.findViewById(R.id.mImage)
         var name: TextView = view.findViewById(R.id.mTitle)
         var mLabel: TextView = view.findViewById(R.id.mSubTitle)
         private var mMenus: ImageView = view.findViewById(R.id.mMenus)
@@ -113,25 +115,36 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 //                        ctx.startActivity(intent)
 //
                         if (ctx is ImageFatcher) {
-                            ctx.onEditImageClick(image)
+                            ctx.onEditImageClick(image, position)
                         }
                         true
                     }
 
 
                     R.id.editColor -> {
-                        val v = LayoutInflater.from(ctx).inflate(R.layout.change_color_notebook, null)
+                        val v = LayoutInflater.from(ctx).inflate(
+                            R.layout.change_color_notebook,
+                            null
+                        )
                         val color = v.findViewById<ColorWheel>(R.id.notebookColor)
 
                         AlertDialog.Builder(ctx)
                             .setView(v)
                             .setPositiveButton("Ok") { dialog, _ ->
-                                position.notebook_color = "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}"
+                                position.notebook_color = "#${Integer.toHexString(color.rgb.red)}${
+                                    Integer.toHexString(
+                                        color.rgb.green
+                                    )
+                                }${Integer.toHexString(color.rgb.blue)}"
                                 editNotebook(
                                     position,
                                     position.notebook_name,
                                     position.label,
-                                    "#${Integer.toHexString(color.rgb.red)}${Integer.toHexString(color.rgb.green)}${Integer.toHexString(color.rgb.blue)}",
+                                    "#${Integer.toHexString(color.rgb.red)}${
+                                        Integer.toHexString(
+                                            color.rgb.green
+                                        )
+                                    }${Integer.toHexString(color.rgb.blue)}",
                                     position.collaborator_id
                                 )
                                 notifyDataSetChanged()
@@ -153,7 +166,7 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
                         true
                     }
-                    R.id.shareNotebook ->{
+                    R.id.shareNotebook -> {
                         val v = LayoutInflater.from(ctx).inflate(R.layout.share_notebook, null)
                         val name = v.findViewById<EditText>(R.id.collabName)
 
@@ -197,6 +210,36 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
         holder.name.text = newList.notebook_name
         holder.mLabel.text = newList.label
         holder.itemView.setBackgroundColor(Color.parseColor(notebookList[position].notebook_color))
+
+        val client = OkHttpClient()
+
+
+        client.newCall(
+            Request.Builder()
+                .url("http://10.0.2.2:8000/notebooks/${notebookList[position].notebook_id}/icon")
+                .build()
+        ).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Fail debug")
+                throw e
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response.code())
+                if(response.code() != 404) {
+                    val img = response.body()?.bytes()
+                    var options = BitmapFactory.Options()
+                    var bitmap = BitmapFactory.decodeByteArray(img, 0, img!!.size, options)
+
+                    (ctx as Activity).runOnUiThread {
+                        holder.image.setImageBitmap(bitmap)
+                    }
+                }
+
+            }
+        })
+
+
     }
 
     override fun getItemCount(): Int {
@@ -211,10 +254,11 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             Json.encodeToString(CurrentUser.token)
         )
 
-        client.newCall(Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
-            .delete(bod)
-            .build()
+        client.newCall(
+            Request.Builder()
+                .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+                .delete(bod)
+                .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -241,10 +285,11 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
             """.trimIndent()
         )
         //Fetching jwt
-        client.newCall(Request.Builder()
-            .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
-            .put(bod)
-            .build()
+        client.newCall(
+            Request.Builder()
+                .url("http://10.0.2.2:8000/notebooks/${ntb.notebook_id}")
+                .put(bod)
+                .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -265,9 +310,10 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
     fun shareNotebook(ntb: NotebookData, name: String?){
         val client = OkHttpClient()
-        client.newCall(Request.Builder()
-            .url("http://10.0.2.2:8000/users/user/?name=$name")
-            .build()
+        client.newCall(
+            Request.Builder()
+                .url("http://10.0.2.2:8000/users/user/?name=$name")
+                .build()
         ).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 println("Fail debug")
@@ -276,14 +322,13 @@ class NotebookAdapter(val ctx: Context, val notebookList: ArrayList<NotebookData
 
             override fun onResponse(call: Call, response: Response) {
                 Looper.prepare()
-                if(response.code() != 200){
+                if (response.code() != 200) {
                     Toast.makeText(
                         ctx,
                         "User with that name doesn't exist",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-                else{
+                } else {
                     editNotebook(
                         ntb,
                         ntb.notebook_name,
